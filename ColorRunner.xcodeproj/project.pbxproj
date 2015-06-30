@@ -7,10 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		372E77C21B4230DA00007E75 /* MainMenuCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372E77C11B4230DA00007E75 /* MainMenuCollectionViewController.swift */; };
+		372E77C41B423BB800007E75 /* MainMenuCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 372E77C31B423BB800007E75 /* MainMenuCellView.xib */; };
 		37B1648B1B40D77C0043654C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B1648A1B40D77C0043654C /* AppDelegate.swift */; };
-		37B1648D1B40D77C0043654C /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 37B1648C1B40D77C0043654C /* GameScene.sks */; };
-		37B1648F1B40D77C0043654C /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B1648E1B40D77C0043654C /* GameScene.swift */; };
-		37B164911B40D77C0043654C /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B164901B40D77C0043654C /* GameViewController.swift */; };
 		37B164941B40D77C0043654C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 37B164921B40D77C0043654C /* Main.storyboard */; };
 		37B164961B40D77C0043654C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 37B164951B40D77C0043654C /* Assets.xcassets */; };
 		37B164991B40D77C0043654C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 37B164971B40D77C0043654C /* LaunchScreen.storyboard */; };
@@ -36,11 +35,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		372E77C11B4230DA00007E75 /* MainMenuCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainMenuCollectionViewController.swift; sourceTree = "<group>"; };
+		372E77C31B423BB800007E75 /* MainMenuCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenuCellView.xib; sourceTree = "<group>"; };
 		37B164871B40D77C0043654C /* ColorRunner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ColorRunner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		37B1648A1B40D77C0043654C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		37B1648C1B40D77C0043654C /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
-		37B1648E1B40D77C0043654C /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
-		37B164901B40D77C0043654C /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		37B164931B40D77C0043654C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		37B164951B40D77C0043654C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		37B164981B40D77C0043654C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -78,9 +76,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		376F1D7B1B40E605000B4FA5 /* Levels */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Levels;
+			sourceTree = "<group>";
+		};
 		37B1647E1B40D77C0043654C = {
 			isa = PBXGroup;
 			children = (
+				376F1D7B1B40E605000B4FA5 /* Levels */,
 				37B164891B40D77C0043654C /* ColorRunner */,
 				37B164A21B40D77D0043654C /* ColorRunnerTests */,
 				37B164AD1B40D77D0043654C /* ColorRunnerUITests */,
@@ -102,13 +108,12 @@
 			isa = PBXGroup;
 			children = (
 				37B1648A1B40D77C0043654C /* AppDelegate.swift */,
-				37B1648C1B40D77C0043654C /* GameScene.sks */,
-				37B1648E1B40D77C0043654C /* GameScene.swift */,
-				37B164901B40D77C0043654C /* GameViewController.swift */,
 				37B164921B40D77C0043654C /* Main.storyboard */,
 				37B164951B40D77C0043654C /* Assets.xcassets */,
 				37B164971B40D77C0043654C /* LaunchScreen.storyboard */,
 				37B1649A1B40D77C0043654C /* Info.plist */,
+				372E77C11B4230DA00007E75 /* MainMenuCollectionViewController.swift */,
+				372E77C31B423BB800007E75 /* MainMenuCellView.xib */,
 			);
 			path = ColorRunner;
 			sourceTree = "<group>";
@@ -234,9 +239,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37B1648D1B40D77C0043654C /* GameScene.sks in Resources */,
 				37B164991B40D77C0043654C /* LaunchScreen.storyboard in Resources */,
 				37B164961B40D77C0043654C /* Assets.xcassets in Resources */,
+				372E77C41B423BB800007E75 /* MainMenuCellView.xib in Resources */,
 				37B164941B40D77C0043654C /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -262,8 +267,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37B1648F1B40D77C0043654C /* GameScene.swift in Sources */,
-				37B164911B40D77C0043654C /* GameViewController.swift in Sources */,
+				372E77C21B4230DA00007E75 /* MainMenuCollectionViewController.swift in Sources */,
 				37B1648B1B40D77C0043654C /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -491,6 +495,7 @@
 				37B164B51B40D77D0043654C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		37B164B61B40D77D0043654C /* Build configuration list for PBXNativeTarget "ColorRunnerTests" */ = {
 			isa = XCConfigurationList;
@@ -499,6 +504,7 @@
 				37B164B81B40D77D0043654C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		37B164B91B40D77D0043654C /* Build configuration list for PBXNativeTarget "ColorRunnerUITests" */ = {
 			isa = XCConfigurationList;
@@ -507,6 +513,7 @@
 				37B164BB1B40D77D0043654C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
