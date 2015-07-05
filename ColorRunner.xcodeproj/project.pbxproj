@@ -15,6 +15,7 @@
 		37B164991B40D77C0043654C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 37B164971B40D77C0043654C /* LaunchScreen.storyboard */; };
 		37B164A41B40D77D0043654C /* ColorRunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B164A31B40D77D0043654C /* ColorRunnerTests.swift */; };
 		37B164AF1B40D77D0043654C /* ColorRunnerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B164AE1B40D77D0043654C /* ColorRunnerUITests.swift */; };
+		37FEC6CF1B49A87B0092BE80 /* MainMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FEC6CE1B49A87B0092BE80 /* MainMenuViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		37B164AA1B40D77D0043654C /* ColorRunnerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ColorRunnerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		37B164AE1B40D77D0043654C /* ColorRunnerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorRunnerUITests.swift; sourceTree = "<group>"; };
 		37B164B01B40D77D0043654C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		37FEC6CE1B49A87B0092BE80 /* MainMenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainMenuViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +116,7 @@
 				37B1649A1B40D77C0043654C /* Info.plist */,
 				372E77C11B4230DA00007E75 /* MainMenuCollectionViewController.swift */,
 				372E77C31B423BB800007E75 /* MainMenuCellView.xib */,
+				37FEC6CE1B49A87B0092BE80 /* MainMenuViewController.swift */,
 			);
 			path = ColorRunner;
 			sourceTree = "<group>";
@@ -267,6 +270,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37FEC6CF1B49A87B0092BE80 /* MainMenuViewController.swift in Sources */,
 				372E77C21B4230DA00007E75 /* MainMenuCollectionViewController.swift in Sources */,
 				37B1648B1B40D77C0043654C /* AppDelegate.swift in Sources */,
 			);
