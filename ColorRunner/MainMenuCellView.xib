@@ -18,7 +18,9 @@
                         <constraints>
                             <constraint firstAttribute="height" constant="30" id="7Yp-MJ-LJw"/>
                         </constraints>
-                        <state key="normal" title="Button"/>
+                        <state key="normal" title="Button">
+                            <color key="titleColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </state>
                     </button>
                 </subviews>
                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>

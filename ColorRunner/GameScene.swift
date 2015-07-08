@@ -1,8 +1,8 @@
 //
 //  GameScene.swift
-//  ColorRunner
+//  Junk
 //
-//  Created by Dan on 6/28/15.
+//  Created by Dan on 7/7/15.
 //  Copyright (c) 2015 Dan. All rights reserved.
 //
 

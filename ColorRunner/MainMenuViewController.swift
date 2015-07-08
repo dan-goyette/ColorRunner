@@ -62,14 +62,28 @@ class MainMenuViewController: UIViewController , UICollectionViewDelegate, UICol
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(cellReuseIdentifier, forIndexPath: indexPath) as UICollectionViewCell
         
         
-        cell.backgroundColor = lastCellHasBackgroundColor ? UIColor.redColor() : UIColor.blueColor()
+        cell.backgroundColor = UIColor.grayColor() 
         lastCellHasBackgroundColor = !lastCellHasBackgroundColor
         
         let itemIndex = Int(indexPath.row)
 
         let button = cell.viewWithTag(100) as! UIButton
         button.setTitle(levelSelectionModels[itemIndex].Name, forState: UIControlState.Normal);
+        button.addTarget(self, action: "levelButtonPressed:", forControlEvents: .TouchUpInside)
+        button.tag = itemIndex
         
         return cell
+    }
+    
+    
+    func levelButtonPressed(sender: UIButton!) {
+        let levelIndex = sender.tag
+        let levelModel = self.levelSelectionModels[levelIndex]
+        
+        let gameLevelViewController = GameLevelViewController()
+        self.presentViewController(gameLevelViewController, animated: true, completion: nil )
+        
+//        let vc = self.storyboard!.instantiateViewControllerWithIdentifier("gameLevelController") as! GameLevelViewController
+//        self.presentViewController(vc, animated: true, completion: nil)
     }
 }
