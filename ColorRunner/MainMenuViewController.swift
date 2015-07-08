@@ -14,6 +14,7 @@ class MainMenuViewController: UIViewController , UICollectionViewDelegate, UICol
     //private var mainMenuCollectionView : UICollectionView
     var lastCellHasBackgroundColor = true
 
+    var levelSelectionModels: [LevelSelectionModel] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,7 +28,12 @@ class MainMenuViewController: UIViewController , UICollectionViewDelegate, UICol
         mainMenuCollectionView.dataSource = self
         
         
-        //mainMenuCollectionView.addSubview(self.collectionView)
+        self.levelSelectionModels = [
+            LevelSelectionModel( name: "Level 1", levelPath: "L1.xml"),
+            LevelSelectionModel( name: "Level 2", levelPath: "L2.xml"),
+            LevelSelectionModel( name: "Level 3", levelPath: "L3.xml"),
+            LevelSelectionModel( name: "Level 4", levelPath: "L4.xml"),
+        ]
     }
 
     override func didReceiveMemoryWarning() {
@@ -36,53 +42,34 @@ class MainMenuViewController: UIViewController , UICollectionViewDelegate, UICol
     }
     
 
-    
-    
-    // MARK: UICollectionViewDelegate, UICollectionViewDataSource
-//    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-//        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(cellReuseIdentifier, forIndexPath: indexPath) as UICollectionViewCell
-//        return cell
-//    }
+  
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         return 1  // Number of section
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 100
+        return self.levelSelectionModels.count
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         collectionView.deselectItemAtIndexPath(indexPath, animated: false)
-        // Select operation
+
     }
     
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(cellReuseIdentifier, forIndexPath: indexPath) as UICollectionViewCell
         
-        // Configure the cell
-        // 3
+        
         cell.backgroundColor = lastCellHasBackgroundColor ? UIColor.redColor() : UIColor.blueColor()
         lastCellHasBackgroundColor = !lastCellHasBackgroundColor
         
-        let label = cell.viewWithTag(100) as! UILabel
-        label.text = "x" + String(indexPath.row)
+        let itemIndex = Int(indexPath.row)
+
+        let button = cell.viewWithTag(100) as! UIButton
+        button.setTitle(levelSelectionModels[itemIndex].Name, forState: UIControlState.Normal);
         
         return cell
     }
-
-    
-//    func collectionView(collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionReusableView {
-//        var reusableView : UICollectionReusableView? = nil
-//        
-//        // Create header
-//        if (kind == UICollectionElementKindSectionHeader) {
-//            // Create Header
-//            var headerView : PackCollectionSectionView = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionHeader, withReuseIdentifier: kCellheaderReuse, forIndexPath: indexPath) as PackCollectionSectionView
-//            
-//            reusableView = headerView
-//        }
-//        return reusableView!
-//    }
 }
