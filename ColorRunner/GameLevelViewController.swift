@@ -5,16 +5,16 @@
 //  Created by Dan on 7/7/15.
 //  Copyright © 2015 Dan. All rights reserved.
 //
-
+//
 import UIKit
 import SpriteKit
 
 class GameLevelViewController: UIViewController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if let scene = GameScene(fileNamed:"GameScene") {
+        if let scene = GameLevelScene(fileNamed:"GameLevelScene") {
             // Configure the view.
             let skView = self.view as! SKView
             skView.showsFPS = true

@@ -80,10 +80,7 @@ class MainMenuViewController: UIViewController , UICollectionViewDelegate, UICol
         let levelIndex = sender.tag
         let levelModel = self.levelSelectionModels[levelIndex]
         
-        let gameLevelViewController = GameLevelViewController()
-        self.presentViewController(gameLevelViewController, animated: true, completion: nil )
-        
-//        let vc = self.storyboard!.instantiateViewControllerWithIdentifier("gameLevelController") as! GameLevelViewController
-//        self.presentViewController(vc, animated: true, completion: nil)
+        let gameLevelViewController = self.storyboard!.instantiateViewControllerWithIdentifier("GameLevelViewController") as! GameLevelViewController
+        self.navigationController!.pushViewController(gameLevelViewController, animated: true)
     }
 }

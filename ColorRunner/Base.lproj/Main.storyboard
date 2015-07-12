@@ -1,10 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8121.20" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="vZe-Lr-4H0">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8152.3" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="dZE-CZ-tBl">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8101.16"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8124.4"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="WYg-ry-c3D">
+            <objects>
+                <navigationController navigationBarHidden="YES" id="dZE-CZ-tBl" sceneMemberID="viewController">
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" prompted="NO"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="cGj-Bj-z3J">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="vPu-ch-H5c">
+                        <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
+                    <connections>
+                        <segue destination="vZe-Lr-4H0" kind="relationship" relationship="rootViewController" id="xeF-tM-19F"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iwf-uU-pTT" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1098" y="-741"/>
+        </scene>
         <!--Main Menu View Controller-->
         <scene sceneID="F5R-IE-NcP">
             <objects>
@@ -62,8 +83,7 @@
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Main Menu" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7mu-4O-jmE">
                                 <rect key="frame" x="193" y="69" width="213" height="33"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="213" id="Mtb-Jy-2Vx"/>
-                                    <constraint firstAttribute="height" constant="33" id="kre-OK-fP1"/>
+                                    <constraint firstAttribute="height" constant="33" id="W32-p0-GcY"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="19"/>
                                 <color key="textColor" red="0.02088518813252449" green="0.22877423465251923" blue="0.60660707950592041" alpha="1" colorSpace="calibratedRGB"/>
@@ -73,27 +93,28 @@
                         <color key="backgroundColor" red="0.82745105028152466" green="0.83137261867523193" blue="0.95686280727386475" alpha="1" colorSpace="deviceRGB"/>
                         <constraints>
                             <constraint firstItem="yVV-2w-E9R" firstAttribute="centerX" secondItem="Dhf-ez-a2d" secondAttribute="centerX" id="05i-oW-Rbi"/>
+                            <constraint firstItem="7mu-4O-jmE" firstAttribute="leading" secondItem="iQF-Zf-w41" secondAttribute="leading" id="1W0-y1-fBT"/>
                             <constraint firstItem="pvV-h3-RJL" firstAttribute="trailing" secondItem="Dhf-ez-a2d" secondAttribute="trailingMargin" id="DvX-kC-akw"/>
-                            <constraint firstItem="iQF-Zf-w41" firstAttribute="leading" secondItem="7mu-4O-jmE" secondAttribute="leading" id="Mhx-fd-IzW"/>
-                            <constraint firstItem="iQF-Zf-w41" firstAttribute="trailing" secondItem="7mu-4O-jmE" secondAttribute="trailing" id="PBY-nq-ivc"/>
-                            <constraint firstItem="7mu-4O-jmE" firstAttribute="top" secondItem="iQF-Zf-w41" secondAttribute="bottom" constant="8" symbolic="YES" id="PON-Ys-kXU"/>
+                            <constraint firstItem="7mu-4O-jmE" firstAttribute="top" secondItem="iQF-Zf-w41" secondAttribute="bottom" constant="8" symbolic="YES" id="Mcx-QL-FgR"/>
+                            <constraint firstItem="7mu-4O-jmE" firstAttribute="trailing" secondItem="iQF-Zf-w41" secondAttribute="trailing" id="NnL-dw-20V"/>
                             <constraint firstItem="iQF-Zf-w41" firstAttribute="centerX" secondItem="Dhf-ez-a2d" secondAttribute="centerX" id="REg-YA-ns4"/>
                             <constraint firstAttribute="bottom" secondItem="yVV-2w-E9R" secondAttribute="bottom" constant="20" symbolic="YES" id="RZq-94-Sml"/>
                             <constraint firstItem="pvV-h3-RJL" firstAttribute="top" secondItem="xiG-y3-0ox" secondAttribute="bottom" constant="8" id="dpG-rp-lRp"/>
                             <constraint firstItem="yVV-2w-E9R" firstAttribute="trailing" secondItem="pvV-h3-RJL" secondAttribute="trailing" id="i0d-vh-7Hj"/>
+                            <constraint firstItem="yVV-2w-E9R" firstAttribute="top" secondItem="7mu-4O-jmE" secondAttribute="bottom" constant="8" symbolic="YES" id="kCZ-0N-ndN"/>
                             <constraint firstItem="iQF-Zf-w41" firstAttribute="top" secondItem="xiG-y3-0ox" secondAttribute="bottom" constant="8" id="m8r-7b-nkq"/>
-                            <constraint firstItem="yVV-2w-E9R" firstAttribute="top" secondItem="7mu-4O-jmE" secondAttribute="bottom" constant="8" id="pOk-KV-eJq"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="OdU-ei-qVR"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NLx-JI-t7z" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1812" y="-12"/>
+            <point key="canvasLocation" x="1965" y="-741"/>
         </scene>
         <!--Game Level View Controller-->
         <scene sceneID="czK-HJ-dT0">
             <objects>
-                <viewController id="NFO-vc-xmN" customClass="GameLevelViewController" customModule="ColorRunner" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="GameLevelViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="NFO-vc-xmN" customClass="GameLevelViewController" customModule="ColorRunner" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="r7c-OE-mVc"/>
                         <viewControllerLayoutGuide type="bottom" id="zuz-a4-S7F"/>
@@ -106,9 +127,9 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DB7-Yx-uYZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2463" y="-13"/>
+            <point key="canvasLocation" x="2697" y="-741"/>
         </scene>
-        <!--View Controller-->
+        <!--Title-->
         <scene sceneID="ETS-vv-4IZ">
             <objects>
                 <viewController id="nSn-hh-pJq" sceneMemberID="viewController">
@@ -209,10 +230,18 @@
                             </mask>
                         </variation>
                     </view>
+                    <toolbarItems>
+                        <barButtonItem title="Item" id="Io4-ws-qzO"/>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" title="Title" id="G9U-ex-dCM"/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MrM-eq-hJD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1812" y="675"/>
+            <point key="canvasLocation" x="1965" y="-1491"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="xeF-tM-19F"/>
+    </inferredMetricsTieBreakers>
 </document>
