@@ -12,6 +12,7 @@
 		373C4A641B4CACB700157501 /* GameLevelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373C4A631B4CACB700157501 /* GameLevelViewController.swift */; };
 		37A687641B52FE2600805EEC /* GameLevelScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 37A687621B52FE2600805EEC /* GameLevelScene.sks */; };
 		37A687651B52FE2600805EEC /* GameLevelScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37A687631B52FE2600805EEC /* GameLevelScene.swift */; };
+		37A687891B531CC300805EEC /* AppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37A687881B531CC200805EEC /* AppConstants.swift */; };
 		37B1648B1B40D77C0043654C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B1648A1B40D77C0043654C /* AppDelegate.swift */; };
 		37B164941B40D77C0043654C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 37B164921B40D77C0043654C /* Main.storyboard */; };
 		37B164961B40D77C0043654C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 37B164951B40D77C0043654C /* Assets.xcassets */; };
@@ -44,6 +45,7 @@
 		373C4A631B4CACB700157501 /* GameLevelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameLevelViewController.swift; sourceTree = "<group>"; };
 		37A687621B52FE2600805EEC /* GameLevelScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameLevelScene.sks; sourceTree = "<group>"; };
 		37A687631B52FE2600805EEC /* GameLevelScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameLevelScene.swift; sourceTree = "<group>"; };
+		37A687881B531CC200805EEC /* AppConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppConstants.swift; sourceTree = "<group>"; };
 		37B164871B40D77C0043654C /* ColorRunner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ColorRunner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		37B1648A1B40D77C0043654C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		37B164931B40D77C0043654C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -88,6 +90,7 @@
 			isa = PBXGroup;
 			children = (
 				373C4A601B4CA7C200157501 /* Models */,
+				37A687881B531CC200805EEC /* AppConstants.swift */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -297,6 +300,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				37A687651B52FE2600805EEC /* GameLevelScene.swift in Sources */,
+				37A687891B531CC300805EEC /* AppConstants.swift in Sources */,
 				37FEC6CF1B49A87B0092BE80 /* MainMenuViewController.swift in Sources */,
 				373C4A641B4CACB700157501 /* GameLevelViewController.swift in Sources */,
 				37B1648B1B40D77C0043654C /* AppDelegate.swift in Sources */,

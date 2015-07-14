@@ -14,7 +14,9 @@ class GameLevelViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if let scene = GameLevelScene(fileNamed:"GameLevelScene") {
+        if let scene = GameLevelScene(fileNamed: "GameLevelScene") {
+            scene.LevelName = self.LevelArg
+            
             // Configure the view.
             let skView = self.view as! SKView
             skView.showsFPS = true
@@ -29,6 +31,8 @@ class GameLevelViewController: UIViewController {
             skView.presentScene(scene)
         }
     }
+    
+    var LevelArg: String!;
     
     override func shouldAutorotate() -> Bool {
         return true
