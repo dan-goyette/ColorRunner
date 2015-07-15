@@ -18,6 +18,8 @@ class GameLevelScene: SKScene {
     var gameWorldContainer: SKSpriteNode!
     var playerRectangle: SKSpriteNode!
     var playerPhysics: SKPhysicsBody!
+    var playerIsMoving: Bool!
+    var moveButton: SKShapeNode!
     
     func tryDoInit() {
         if (!self.didInit) {
@@ -51,12 +53,10 @@ class GameLevelScene: SKScene {
             self.gameWorldContainer.addChild(floor)
             
             floor.physicsBody = SpriteFactory.CreateDefaultPhysicsBody(floor)
-            //self.playerRectangle.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "star.png"), size: self.playerRectangle.size)
             if let floorPhysics = floor.physicsBody {
                 floorPhysics.affectedByGravity = false
                 floorPhysics.allowsRotation = false
                 floorPhysics.dynamic = false;
-                
             }
             
             
@@ -77,27 +77,28 @@ class GameLevelScene: SKScene {
             eye.anchorPoint = CGPointMake(0.0 , 0.0)
             self.playerRectangle.addChild(eye)
 
+            self.playerIsMoving = false
+            
+            
+            
+            
+            self.moveButton = SKShapeNode(circleOfRadius: 30)
+            self.moveButton.fillColor = UIColor.redColor()
+            self.moveButton.position = CGPointMake(-450, 0)
+            self.moveButton.zPosition = 2
+            self.addChild(self.moveButton)
+            
             
             // Initialization is complete
             self.didInit = true;
         }
     }
     
+   
+    
     override func didMoveToView(view: SKView) {
         tryDoInit();
-        view.showsPhysics = true
-        
-        let tlLabel = SKLabelNode(fontNamed:"Arial")
-        tlLabel.text = "TL";
-        tlLabel.fontSize = 65;
-        tlLabel.color = UIColor.whiteColor()
-        tlLabel.position = CGPoint(x:0, y:0);
-        tlLabel.horizontalAlignmentMode = .Left
-
-        self.gameWorldContainer.addChild(tlLabel);
-        
-
-    }
+        view.showsPhysics = true    }
     
     var LevelName: String!
     var ContainerSprite: SKSpriteNode!
@@ -105,15 +106,30 @@ class GameLevelScene: SKScene {
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         /* Called when a touch begins */
         
-        //        for touch in touches {
-        //            let location = touch.locationInNode(self)
-        //
-        //        }
+        for touch in touches {
+            let location = touch.locationInNode(self)
+            
+            if(self.moveButton.containsPoint(location)) {
+                self.playerIsMoving = true
+            }
+        }
+    }
+    
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        
+        self.playerIsMoving = false
     }
     
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
         
-        //self.playerRectangle.position.x += 5
+        if (self.playerIsMoving! ) {
+            let rate = CGFloat(0.55);
+            let relativeVelocity = CGVectorMake(200-self.playerPhysics.velocity.dx, 0);
+            self.playerPhysics.velocity=CGVectorMake(self.playerPhysics.velocity.dx+relativeVelocity.dx*rate, self.playerPhysics.velocity.dy+relativeVelocity.dy*rate);
+        }
+        
+        
     }
+    
 }
