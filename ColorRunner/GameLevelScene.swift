@@ -22,11 +22,13 @@ class GameLevelScene: SKScene {
     
     var playerIsMoving: Bool!
     var playerIsFacingRight: Bool!
+    var playerWasFacingRight: Bool!
     
-    func tryDoInit() {
+    var debugLabel: SKLabelNode!
+    
+    func tryDoInit(view: SKView) {
         if (!self.didInit) {
-            
-            
+            //view.showsPhysics = true
             
             self.gameWorldWrapper = SKSpriteNode()
             self.gameWorldWrapper.size = CGSize(width: AppConstants.UILayout.PlayableAreaWidth + 2, height: AppConstants.UILayout.PlayableAreaHeight + 2)
@@ -63,21 +65,37 @@ class GameLevelScene: SKScene {
             
             let rotate45 = SKAction.rotateByAngle(CGFloat(M_PI / 4), duration: 0)
             
-            let ramp = SKSpriteNode()
-            ramp.size = CGSize(width: 300, height: 4)
-            ramp.color = UIColor.brownColor()
-            ramp.position = CGPointMake( 500, 140)
-            ramp.anchorPoint = CGPointMake(0.0 , 0.0)
-            ramp.runAction(rotate45)
-            self.gameWorldContainer.addChild(ramp)
+            let ramp1 = SKSpriteNode()
+            ramp1.size = CGSize(width: 300, height: 4)
+            ramp1.color = UIColor.brownColor()
+            ramp1.position = CGPointMake( 500, 140)
+            ramp1.anchorPoint = CGPointMake(0.0 , 0.0)
+            ramp1.runAction(rotate45)
+            self.gameWorldContainer.addChild(ramp1)
             
-            ramp.physicsBody = SpriteFactory.CreateDefaultPhysicsBody(ramp)
-            if let rampPhysics = ramp.physicsBody {
-                rampPhysics.affectedByGravity = false
-                rampPhysics.allowsRotation = false
-                rampPhysics.dynamic = false;
+            ramp1.physicsBody = SpriteFactory.CreateDefaultPhysicsBody(ramp1)
+            if let ramp1Physics = ramp1.physicsBody {
+                ramp1Physics.affectedByGravity = false
+                ramp1Physics.allowsRotation = false
+                ramp1Physics.dynamic = false;
             }
 
+            
+            
+            let ramp2 = SKSpriteNode()
+            ramp2.size = CGSize(width: 400, height: 4)
+            ramp2.color = UIColor.brownColor()
+            ramp2.position = CGPointMake( 1000, 140)
+            ramp2.anchorPoint = CGPointMake(0.0 , 0.0)
+            ramp2.runAction(rotate45)
+            self.gameWorldContainer.addChild(ramp2)
+            
+            ramp2.physicsBody = SpriteFactory.CreateDefaultPhysicsBody(ramp2)
+            if let ramp2Physics = ramp2.physicsBody {
+                ramp2Physics.affectedByGravity = false
+                ramp2Physics.allowsRotation = false
+                ramp2Physics.dynamic = false;
+            }
             
             
             self.playerRectangle = SKSpriteNode()
@@ -99,6 +117,7 @@ class GameLevelScene: SKScene {
 
             self.playerIsMoving = false
             self.playerIsFacingRight = true;
+            self.playerWasFacingRight = true;
             
             
             
@@ -109,6 +128,14 @@ class GameLevelScene: SKScene {
             self.addChild(self.moveButton)
             
             
+            
+            self.debugLabel = SKLabelNode()
+            self.debugLabel.position = CGPointMake(-450, 300)
+            self.debugLabel.text = "Debug"
+            self.debugLabel.fontSize = 16
+            self.addChild(debugLabel)
+            
+            
             // Initialization is complete
             self.didInit = true;
         }
@@ -117,8 +144,9 @@ class GameLevelScene: SKScene {
    
     
     override func didMoveToView(view: SKView) {
-        tryDoInit();
-        view.showsPhysics = true    }
+        tryDoInit(view);
+        
+    }
     
     var LevelName: String!
     var ContainerSprite: SKSpriteNode!
@@ -154,7 +182,46 @@ class GameLevelScene: SKScene {
         self.playerPhysics.velocity=CGVectorMake(self.playerPhysics.velocity.dx+relativeVelocity.dx * rate * coeff, self.playerPhysics.velocity.dy+relativeVelocity.dy * rate);
         //        }
         
+        tryRepositionGameWorldWrapper()
         
+    }
+    
+    func tryRepositionGameWorldWrapper() {
+//        gameWorldWrapper.position.x++;
+        
+        
+        let playerPoint = convertPoint(self.playerRectangle.position, fromNode: self.gameWorldWrapper)
+        let playerPointX = convertPoint(playerPoint, fromNode: self)
+        let playerPointY = convertPoint(playerPointX, fromNode: self)
+        
+        self.debugLabel.text = String(playerPointY.x)
+        
+        let diff = playerPointY.x - UIScreen.mainScreen().bounds.width / 2
+       
+        
+        
+        
+        var action : SKAction? = nil
+        var duration: NSTimeInterval = 0
+        
+        if ((self.playerIsFacingRight! && !self.playerWasFacingRight!)
+            || (!self.playerIsFacingRight! && self.playerWasFacingRight!)) {
+            duration = 0//0.25
+            self.playerWasFacingRight = !self.playerWasFacingRight!
+        }
+
+        if (diff > -150 && self.playerIsFacingRight!) {
+            //gameWorldWrapper.position.x -= diff + 100
+            
+            action = SKAction.moveByX(-1 * (diff + 150), y: 0, duration: duration)
+        } else if (diff < 350 && !self.playerIsFacingRight!) {
+           // gameWorldWrapper.position.x -= diff - 100
+            
+            action = SKAction.moveByX(-1 * (diff - 350), y: 0, duration: duration)
+        }
+        if (action != nil) {
+            gameWorldWrapper.runAction(action!)
+        }
     }
     
 }
