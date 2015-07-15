@@ -18,8 +18,10 @@ class GameLevelScene: SKScene {
     var gameWorldContainer: SKSpriteNode!
     var playerRectangle: SKSpriteNode!
     var playerPhysics: SKPhysicsBody!
-    var playerIsMoving: Bool!
     var moveButton: SKShapeNode!
+    
+    var playerIsMoving: Bool!
+    var playerIsFacingRight: Bool!
     
     func tryDoInit() {
         if (!self.didInit) {
@@ -59,6 +61,24 @@ class GameLevelScene: SKScene {
                 floorPhysics.dynamic = false;
             }
             
+            let rotate45 = SKAction.rotateByAngle(CGFloat(M_PI / 4), duration: 0)
+            
+            let ramp = SKSpriteNode()
+            ramp.size = CGSize(width: 300, height: 4)
+            ramp.color = UIColor.brownColor()
+            ramp.position = CGPointMake( 500, 140)
+            ramp.anchorPoint = CGPointMake(0.0 , 0.0)
+            ramp.runAction(rotate45)
+            self.gameWorldContainer.addChild(ramp)
+            
+            ramp.physicsBody = SpriteFactory.CreateDefaultPhysicsBody(ramp)
+            if let rampPhysics = ramp.physicsBody {
+                rampPhysics.affectedByGravity = false
+                rampPhysics.allowsRotation = false
+                rampPhysics.dynamic = false;
+            }
+
+            
             
             self.playerRectangle = SKSpriteNode()
             self.playerRectangle.size = CGSize(width: 20, height: 44)
@@ -78,7 +98,7 @@ class GameLevelScene: SKScene {
             self.playerRectangle.addChild(eye)
 
             self.playerIsMoving = false
-            
+            self.playerIsFacingRight = true;
             
             
             
@@ -106,28 +126,33 @@ class GameLevelScene: SKScene {
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         /* Called when a touch begins */
         
-        for touch in touches {
-            let location = touch.locationInNode(self)
-            
-            if(self.moveButton.containsPoint(location)) {
-                self.playerIsMoving = true
-            }
-        }
+        self.playerIsFacingRight = !self.playerIsFacingRight
+        self.playerRectangle.xScale *= -1
+        
+        //for touch in touches {
+        //            let location = touch.locationInNode(self)
+        //
+        //            if(self.moveButton.containsPoint(location)) {
+        //                self.playerIsMoving = true
+        //            }
+        //}
     }
     
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         
-        self.playerIsMoving = false
+        //self.playerIsMoving = false
     }
     
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
         
-        if (self.playerIsMoving! ) {
-            let rate = CGFloat(0.55);
-            let relativeVelocity = CGVectorMake(200-self.playerPhysics.velocity.dx, 0);
-            self.playerPhysics.velocity=CGVectorMake(self.playerPhysics.velocity.dx+relativeVelocity.dx*rate, self.playerPhysics.velocity.dy+relativeVelocity.dy*rate);
-        }
+        //        if (self.playerIsMoving! ) {
+        let coeff = CGFloat(self.playerIsFacingRight! ? 1.0 : -1.0)
+        let rate = CGFloat(0.95);
+       
+        let relativeVelocity = CGVectorMake(300-abs(self.playerPhysics.velocity.dx), 0);
+        self.playerPhysics.velocity=CGVectorMake(self.playerPhysics.velocity.dx+relativeVelocity.dx * rate * coeff, self.playerPhysics.velocity.dy+relativeVelocity.dy * rate);
+        //        }
         
         
     }
