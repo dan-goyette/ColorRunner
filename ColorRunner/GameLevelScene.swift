@@ -17,6 +17,7 @@ class GameLevelScene: SKScene {
     var gameWorldWrapper: SKSpriteNode!
     var gameWorldContainer: SKSpriteNode!
     var playerRectangle: SKSpriteNode!
+    var playerPhysics: SKPhysicsBody!
     
     func tryDoInit() {
         if (!self.didInit) {
@@ -49,15 +50,28 @@ class GameLevelScene: SKScene {
             floor.anchorPoint = CGPointMake(0.0 , 0.0)
             self.gameWorldContainer.addChild(floor)
             
+            floor.physicsBody = SpriteFactory.CreateDefaultPhysicsBody(floor)
+            //self.playerRectangle.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "star.png"), size: self.playerRectangle.size)
+            if let floorPhysics = floor.physicsBody {
+                floorPhysics.affectedByGravity = false
+                floorPhysics.allowsRotation = false
+                floorPhysics.dynamic = false;
+                
+            }
+            
+            
             self.playerRectangle = SKSpriteNode()
-            self.playerRectangle.size = CGSize(width: 20, height: 45)
+            self.playerRectangle.size = CGSize(width: 20, height: 44)
             self.playerRectangle.color = UIColor.redColor()
-            self.playerRectangle.position = CGPointMake( 140, 144)
+            self.playerRectangle.position = CGPointMake( 140, 644)
             self.playerRectangle.anchorPoint = CGPointMake(0.0 , 0.0)
             self.gameWorldContainer.addChild(self.playerRectangle)
             
+            self.playerPhysics = SpriteFactory.CreateDefaultPhysicsBody(self.playerRectangle!)
+            self.playerRectangle.physicsBody  = self.playerPhysics
+            
             let eye = SKSpriteNode()
-            eye.size = CGSize(width: 4, height: 4)
+            eye.size = CGSize(width: 14, height: 4)
             eye.color = UIColor.blackColor()
             eye.position = CGPointMake( 16, 35)
             eye.anchorPoint = CGPointMake(0.0 , 0.0)
@@ -71,7 +85,7 @@ class GameLevelScene: SKScene {
     
     override func didMoveToView(view: SKView) {
         tryDoInit();
-        
+        view.showsPhysics = true
         
         let tlLabel = SKLabelNode(fontNamed:"Arial")
         tlLabel.text = "TL";
@@ -100,6 +114,6 @@ class GameLevelScene: SKScene {
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
         
-        self.playerRectangle.position.x += 4
+        //self.playerRectangle.position.x += 5
     }
 }
