@@ -16,6 +16,7 @@ class SpriteFactory {
         physicsBody.affectedByGravity = true
         physicsBody.allowsRotation = false
         physicsBody.dynamic = true;
+        physicsBody.restitution = 0
         return physicsBody
     }
 }

@@ -7,8 +7,9 @@
 //
 
 import SpriteKit
+import Darwin
 
-class GameLevelScene: SKScene {
+class GameLevelScene: SKScene, SKPhysicsContactDelegate {
     
     var didInit = false
 
@@ -23,12 +24,14 @@ class GameLevelScene: SKScene {
     var playerIsMoving: Bool!
     var playerIsFacingRight: Bool!
     var playerWasFacingRight: Bool!
+    var playerGroundContactCounter: Int32!
     
     var debugLabel: SKLabelNode!
     
     func tryDoInit(view: SKView) {
         if (!self.didInit) {
             //view.showsPhysics = true
+            self.physicsWorld.contactDelegate = self
             
             self.gameWorldWrapper = SKSpriteNode()
             self.gameWorldWrapper.size = CGSize(width: AppConstants.UILayout.PlayableAreaWidth + 2, height: AppConstants.UILayout.PlayableAreaHeight + 2)
@@ -54,6 +57,7 @@ class GameLevelScene: SKScene {
             floor.color = UIColor.brownColor()
             floor.position = CGPointMake( 0, 140)
             floor.anchorPoint = CGPointMake(0.0 , 0.0)
+            
             self.gameWorldContainer.addChild(floor)
             
             floor.physicsBody = SpriteFactory.CreateDefaultPhysicsBody(floor)
@@ -61,6 +65,9 @@ class GameLevelScene: SKScene {
                 floorPhysics.affectedByGravity = false
                 floorPhysics.allowsRotation = false
                 floorPhysics.dynamic = false;
+                floorPhysics.categoryBitMask = groundCategory
+                floorPhysics.contactTestBitMask = 0x0
+
             }
             
             let rotate45 = SKAction.rotateByAngle(CGFloat(M_PI / 4), duration: 0)
@@ -78,6 +85,9 @@ class GameLevelScene: SKScene {
                 ramp1Physics.affectedByGravity = false
                 ramp1Physics.allowsRotation = false
                 ramp1Physics.dynamic = false;
+                ramp1Physics.categoryBitMask = groundCategory
+                ramp1Physics.contactTestBitMask = 0x0
+
             }
 
             
@@ -95,18 +105,25 @@ class GameLevelScene: SKScene {
                 ramp2Physics.affectedByGravity = false
                 ramp2Physics.allowsRotation = false
                 ramp2Physics.dynamic = false;
+                ramp2Physics.categoryBitMask = groundCategory
+                ramp2Physics.contactTestBitMask = 0x0
             }
             
             
             self.playerRectangle = SKSpriteNode()
             self.playerRectangle.size = CGSize(width: 20, height: 44)
             self.playerRectangle.color = UIColor.redColor()
-            self.playerRectangle.position = CGPointMake( 140, 644)
+            self.playerRectangle.position = CGPointMake( 140, 494)
             self.playerRectangle.anchorPoint = CGPointMake(0.0 , 0.0)
             self.gameWorldContainer.addChild(self.playerRectangle)
             
             self.playerPhysics = SpriteFactory.CreateDefaultPhysicsBody(self.playerRectangle!)
             self.playerRectangle.physicsBody  = self.playerPhysics
+            self.playerPhysics.categoryBitMask = playerCategory
+            self.playerPhysics.contactTestBitMask = groundCategory
+            self.playerPhysics.collisionBitMask = groundCategory
+
+            self.playerPhysics.usesPreciseCollisionDetection = true
             
             let eye = SKSpriteNode()
             eye.size = CGSize(width: 14, height: 4)
@@ -135,6 +152,7 @@ class GameLevelScene: SKScene {
             self.debugLabel.fontSize = 16
             self.addChild(debugLabel)
             
+            self.playerGroundContactCounter = 0
             
             // Initialization is complete
             self.didInit = true;
@@ -173,16 +191,41 @@ class GameLevelScene: SKScene {
     
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
-        
-        //        if (self.playerIsMoving! ) {
-        let coeff = CGFloat(self.playerIsFacingRight! ? 1.0 : -1.0)
-        let rate = CGFloat(0.95);
        
-        let relativeVelocity = CGVectorMake(300-abs(self.playerPhysics.velocity.dx), 0);
-        self.playerPhysics.velocity=CGVectorMake(self.playerPhysics.velocity.dx+relativeVelocity.dx * rate * coeff, self.playerPhysics.velocity.dy+relativeVelocity.dy * rate);
-        //        }
         
-        tryRepositionGameWorldWrapper()
+        applyPlayerMovement()
+        //tryRepositionGameWorldWrapper()
+        
+    }
+    
+    func applyPlayerMovement() {
+        
+        if (self.playerGroundContactCounter! > 0) {
+            setDebugMessage("Touching")
+            let maxSpeed = CGFloat(300)
+            let currentSpeed = abs(self.playerPhysics.velocity.dx)
+            var newSpeed = maxSpeed - currentSpeed
+            if (newSpeed < 0) {
+                newSpeed = 0
+            }
+            
+            if (!self.playerIsFacingRight!) {
+                newSpeed *= -1
+            }
+            
+            self.playerPhysics.applyForce(CGVector(dx: newSpeed,dy: 0))
+        } else {
+            setDebugMessage("Not Touching")
+        }
+
+    
+        //        if (self.playerIsMoving! ) {
+//        let coeff = CGFloat(self.playerIsFacingRight! ? 1.0 : -1.0)
+//        let rate = CGFloat(0.95);
+//        
+//        let relativeVelocity = CGVectorMake(300-abs(self.playerPhysics.velocity.dx), 0);
+//        self.playerPhysics.velocity=CGVectorMake(self.playerPhysics.velocity.dx+relativeVelocity.dx * rate * coeff, self.playerPhysics.velocity.dy+relativeVelocity.dy * rate);
+        //        }
         
     }
     
@@ -194,7 +237,7 @@ class GameLevelScene: SKScene {
         let playerPointX = convertPoint(playerPoint, fromNode: self)
         let playerPointY = convertPoint(playerPointX, fromNode: self)
         
-        self.debugLabel.text = String(playerPointY.x)
+        setDebugMessage(String(playerPointY.x))
         
         let diff = playerPointY.x - UIScreen.mainScreen().bounds.width / 2
        
@@ -221,6 +264,35 @@ class GameLevelScene: SKScene {
         }
         if (action != nil) {
             gameWorldWrapper.runAction(action!)
+        }
+    }
+    
+    
+    let groundCategory:UInt32 = 0x1 << 0
+    let playerCategory:UInt32 = 0x1 << 1
+    
+    
+    func setDebugMessage(message: String) {
+        self.debugLabel.text = message
+    }
+    
+    
+    func didBeginContact(contact: SKPhysicsContact )
+    {
+        let collision = (contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask);
+    
+        if (collision == (groundCategory | playerCategory)) {
+            self.playerGroundContactCounter!++
+        }
+    }
+    
+    func didEndContact(contact : SKPhysicsContact )
+    {
+        let collision = (contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask);
+   
+        if (collision == (groundCategory | playerCategory)) {
+            self.playerGroundContactCounter!--
+            
         }
     }
     
