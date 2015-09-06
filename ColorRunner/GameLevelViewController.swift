@@ -27,7 +27,7 @@ class GameLevelViewController: UIViewController {
             
             /* Set the scale mode to scale to fit the window */
             scene.scaleMode = .AspectFill
-            
+                        
             skView.presentScene(scene)
         }
     }
@@ -40,9 +40,9 @@ class GameLevelViewController: UIViewController {
     
     override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
         if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-            return .AllButUpsideDown
+            return .Landscape
         } else {
-            return .All
+            return .Landscape
         }
     }
     

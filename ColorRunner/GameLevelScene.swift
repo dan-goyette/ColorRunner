@@ -12,50 +12,68 @@ import Darwin
 class GameLevelScene: SKScene, SKPhysicsContactDelegate {
     
     var didInit = false
-
- 
   
-    var gameWorldWrapper: SKSpriteNode!
     var gameWorldContainer: SKSpriteNode!
     var playerRectangle: SKSpriteNode!
     var playerPhysics: SKPhysicsBody!
     var moveButton: SKShapeNode!
+    var desiredCameraPosition: CGPoint!
     
     var playerIsMoving: Bool!
     var playerIsFacingRight: Bool!
     var playerWasFacingRight: Bool!
     var playerGroundContactCounter: Int32!
+ 
+    var lastDragPosition: CGPoint?
+    
+    var maxX: CGFloat!
+    var minX: CGFloat!
+    
+    var maxY: CGFloat!
+    var minY: CGFloat!
+    
+    let playerVerticalBoundsLimit: CGFloat = 0.35
+    var isPerformingHorizontalPlayerPositionCorrection: Bool = false
+
     
     var debugLabel: SKLabelNode!
     
     func tryDoInit(view: SKView) {
         if (!self.didInit) {
-            //view.showsPhysics = true
+            view.showsPhysics = true
             self.physicsWorld.contactDelegate = self
-            
-            self.gameWorldWrapper = SKSpriteNode()
-            self.gameWorldWrapper.size = CGSize(width: AppConstants.UILayout.PlayableAreaWidth + 2, height: AppConstants.UILayout.PlayableAreaHeight + 2)
-            self.gameWorldWrapper.color = UIColor.purpleColor()
-            self.gameWorldWrapper.position = CGPointMake( 0, 0)
-            self.gameWorldWrapper.anchorPoint = CGPointMake(0.5 ,0.5)
-            
-            self.addChild(self.gameWorldWrapper)
+            self.desiredCameraPosition = CGPointMake(0,0)
+            self.lastDragPosition = nil
             
             
             self.gameWorldContainer = SKSpriteNode()
             self.gameWorldContainer.size = CGSize(width: AppConstants.UILayout.PlayableAreaWidth, height: AppConstants.UILayout.PlayableAreaHeight)
             self.gameWorldContainer.color = UIColor.grayColor()
-            self.gameWorldContainer.position = CGPoint( x: -1 * (AppConstants.UILayout.PlayableAreaWidth) / 2, y: -1 * (AppConstants.UILayout.PlayableAreaHeight) / 2)
-            self.gameWorldContainer.anchorPoint = CGPointMake(0 ,0)
+//            self.gameWorldContainer.position = CGPoint( x: -1 * (AppConstants.UILayout.PlayableAreaWidth) / 2, y: -1 * (AppConstants.UILayout.PlayableAreaHeight) / 2)
+            self.gameWorldContainer.position = CGPoint( x: 3000, y: 3000)
+            self.addChild(self.gameWorldContainer)
             
-            self.gameWorldWrapper.addChild(self.gameWorldContainer)
             
+            self.maxX = self.gameWorldContainer.size.width / 2
+            self.minX = self.size.width - self.gameWorldContainer.size.width / 2
+
+            self.maxY = self.gameWorldContainer.size.height / 2
+            self.minY = self.size.height - self.gameWorldContainer.size.height / 2
+            
+
+            
+            
+            let tlBox = SKSpriteNode()
+            tlBox.size = CGSize(width: 10, height: 10)
+            tlBox.color = UIColor.redColor()
+            tlBox.position = getTranslatedPositionWithinGameContainer(5,y: 5)
+            self.gameWorldContainer.addChild(tlBox)
        
             
             let floor = SKSpriteNode()
             floor.size = CGSize(width: AppConstants.UILayout.PlayableAreaWidth, height: 4)
             floor.color = UIColor.brownColor()
-            floor.position = CGPointMake( 0, 140)
+            floor.position = getTranslatedPositionWithinGameContainer(0,y: 140)
             floor.anchorPoint = CGPointMake(0.0 , 0.0)
             
             self.gameWorldContainer.addChild(floor)
@@ -75,7 +93,7 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
             let ramp1 = SKSpriteNode()
             ramp1.size = CGSize(width: 300, height: 4)
             ramp1.color = UIColor.brownColor()
-            ramp1.position = CGPointMake( 500, 140)
+            ramp1.position = getTranslatedPositionWithinGameContainer(500,y: 140)
             ramp1.anchorPoint = CGPointMake(0.0 , 0.0)
             ramp1.runAction(rotate45)
             self.gameWorldContainer.addChild(ramp1)
@@ -93,9 +111,9 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
             
             
             let ramp2 = SKSpriteNode()
-            ramp2.size = CGSize(width: 400, height: 4)
+            ramp2.size = CGSize(width: 1000, height: 4)
             ramp2.color = UIColor.brownColor()
-            ramp2.position = CGPointMake( 1000, 140)
+            ramp2.position = getTranslatedPositionWithinGameContainer(1000,y: 140)
             ramp2.anchorPoint = CGPointMake(0.0 , 0.0)
             ramp2.runAction(rotate45)
             self.gameWorldContainer.addChild(ramp2)
@@ -113,7 +131,7 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
             self.playerRectangle = SKSpriteNode()
             self.playerRectangle.size = CGSize(width: 20, height: 44)
             self.playerRectangle.color = UIColor.redColor()
-            self.playerRectangle.position = CGPointMake( 140, 494)
+            self.playerRectangle.position = getTranslatedPositionWithinGameContainer(140 ,y: 500)
             self.playerRectangle.anchorPoint = CGPointMake(0.0 , 0.0)
             self.gameWorldContainer.addChild(self.playerRectangle)
             
@@ -140,14 +158,14 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
             
             self.moveButton = SKShapeNode(circleOfRadius: 30)
             self.moveButton.fillColor = UIColor.redColor()
-            self.moveButton.position = CGPointMake(-450, 0)
+            self.moveButton.position = CGPointMake(50, 400)
             self.moveButton.zPosition = 2
             self.addChild(self.moveButton)
             
             
             
             self.debugLabel = SKLabelNode()
-            self.debugLabel.position = CGPointMake(-450, 300)
+            self.debugLabel.position = CGPointMake(100, 100)
             self.debugLabel.text = "Debug"
             self.debugLabel.fontSize = 16
             self.addChild(debugLabel)
@@ -156,10 +174,37 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
             
             // Initialization is complete
             self.didInit = true;
+            
+            let junk = SKSpriteNode(color: UIColor.blueColor(), size: CGSizeMake(1, 1))
+            junk.position = CGPointMake(0,0)
+            self.addChild(junk)
+            
+            ensureGameWorldContainerIsInScene()
         }
     }
     
-   
+    func getTranslatedPositionWithinGameContainer( desiredCoordinates: CGPoint) -> CGPoint {
+        return getTranslatedPositionWithinGameContainer(desiredCoordinates.x, y: desiredCoordinates.y)
+    }
+    func getTranslatedPositionWithinGameContainer( x: CGFloat, y: CGFloat) -> CGPoint {
+        return CGPointMake(x - CGFloat(AppConstants.UILayout.PlayableAreaWidth / 2), y - CGFloat(AppConstants.UILayout.PlayableAreaHeight / 2))
+    }
+    
+    func ensureGameWorldContainerIsInScene() {
+        if (self.gameWorldContainer.position.x < self.minX) {
+            self.gameWorldContainer.position.x = self.minX
+        }
+        if (self.gameWorldContainer.position.x > self.maxX) {
+            self.gameWorldContainer.position.x = self.maxX
+        }
+        
+        if (self.gameWorldContainer.position.y < self.minY) {
+            self.gameWorldContainer.position.y = self.minY
+        }
+        if (self.gameWorldContainer.position.y > self.maxY) {
+            self.gameWorldContainer.position.y = self.maxY
+        }
+    }
     
     override func didMoveToView(view: SKView) {
         tryDoInit(view);
@@ -172,21 +217,44 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         /* Called when a touch begins */
         
-        self.playerIsFacingRight = !self.playerIsFacingRight
-        self.playerRectangle.xScale *= -1
         
-        //for touch in touches {
-        //            let location = touch.locationInNode(self)
-        //
-        //            if(self.moveButton.containsPoint(location)) {
-        //                self.playerIsMoving = true
-        //            }
-        //}
+        for touch in touches {
+            let location = touch.locationInNode(self)
+            self.lastDragPosition = location
+        
+            if(self.moveButton.containsPoint(location)) {
+                self.playerIsFacingRight = !self.playerIsFacingRight
+                self.playerRectangle.xScale *= -1
+                self.playerIsMoving = true
+            }
+        }
+    }
+    
+    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        for touch in touches {
+            let location = touch.locationInNode(self)
+            let deltaX = location.x - self.lastDragPosition!.x
+            let deltaY = location.y - self.lastDragPosition!.y
+            self.gameWorldContainer.position.x += deltaX
+            self.gameWorldContainer.position.y += deltaY
+            self.lastDragPosition = location
+            
+            ensureGameWorldContainerIsInScene()
+            
+            //
+//            // Ensure the container never goes out of the scene bounds. 
+//            if (containerPositionInScene.x > 0) {
+//                
+//                self.gameWorldContainer.position.x = convertPoint(CGPointMake(0,0), toNode: self.gameWorldContainer).x
+//            }
+            
+            setDebugMessage(String(self.gameWorldContainer.position))
+        }
     }
     
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         
-        //self.playerIsMoving = false
+        self.playerIsMoving = false
     }
     
     override func update(currentTime: CFTimeInterval) {
@@ -194,8 +262,8 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
        
         
         applyPlayerMovement()
-        //tryRepositionGameWorldWrapper()
-        
+        tryRepositionGameWorld()
+         //self.gameWorldContainer.position.x++
     }
     
     func applyPlayerMovement() {
@@ -229,42 +297,136 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
-    func tryRepositionGameWorldWrapper() {
-//        gameWorldWrapper.position.x++;
+    func tryRepositionGameWorld() {
         
         
-        let playerPoint = convertPoint(self.playerRectangle.position, fromNode: self.gameWorldWrapper)
-        let playerPointX = convertPoint(playerPoint, fromNode: self)
-        let playerPointY = convertPoint(playerPointX, fromNode: self)
-        
-        setDebugMessage(String(playerPointY.x))
-        
-        let diff = playerPointY.x - UIScreen.mainScreen().bounds.width / 2
-       
+   
+        let playerPositionInWorldContainer = convertPoint(self.playerRectangle.position, fromNode: self.gameWorldContainer)
+        let playerPointInScene = convertPoint(playerPositionInWorldContainer, fromNode: self)
         
         
-        
-        var action : SKAction? = nil
-        var duration: NSTimeInterval = 0
-        
-        if ((self.playerIsFacingRight! && !self.playerWasFacingRight!)
-            || (!self.playerIsFacingRight! && self.playerWasFacingRight!)) {
-            duration = 0//0.25
-            self.playerWasFacingRight = !self.playerWasFacingRight!
-        }
 
-        if (diff > -150 && self.playerIsFacingRight!) {
-            //gameWorldWrapper.position.x -= diff + 100
-            
-            action = SKAction.moveByX(-1 * (diff + 150), y: 0, duration: duration)
-        } else if (diff < 350 && !self.playerIsFacingRight!) {
-           // gameWorldWrapper.position.x -= diff - 100
-            
-            action = SKAction.moveByX(-1 * (diff - 350), y: 0, duration: duration)
+        // Handle player vertical position. It doesn't matter where the player is facing. If they go beyond the upper/lower
+        // 25% of the screen, we scroll the up/down accordingly to keep the player inside the middle 50% of the vertical screen
+        
+        let playerVerticalPositionPercentageInGameWorldContainer = playerPositionInWorldContainer.y / UIScreen.mainScreen().bounds.height
+        
+        //setDebugMessage(String(Int(playerPositionInWorldContainer.x)) + ", " + String(Int(playerPositionInWorldContainer.y)) + " (" + String(Int(100 * playerVerticalPositionPercentageInGameWorldContainer)) + "%)")
+        
+        if (playerVerticalPositionPercentageInGameWorldContainer > (1.0 - playerVerticalBoundsLimit)) {
+            self.gameWorldContainer.position.y -=  ( playerVerticalPositionPercentageInGameWorldContainer - (1.0 - playerVerticalBoundsLimit)) * UIScreen.mainScreen().bounds.height
+        } else if (playerVerticalPositionPercentageInGameWorldContainer < playerVerticalBoundsLimit) {
+            self.gameWorldContainer.position.y -=  ( playerVerticalPositionPercentageInGameWorldContainer - playerVerticalBoundsLimit) * UIScreen.mainScreen().bounds.height
         }
-        if (action != nil) {
-            gameWorldWrapper.runAction(action!)
+        
+        
+        
+        // Horizontal position is more complex, as it depends on which direction the player is facing.
+        // In general, if the player isfacing in a direction, and less than 75% of the screen is ahead of them,
+        // reposition the container so that 75% is visible. Do this with instantaneous motion changes.
+        // However, if the player changes horizontal directions, this will result in a substantial change,
+        // which we would much rather animate in order to make is smooth. So, more precisely, if the player is close to 
+        // the 75% mark, make the instantaneous change. Otherwise animate a large change. While animating, don't handle any
+        // other changes.
+        
+        
+        if (!self.isPerformingHorizontalPlayerPositionCorrection) {
+            let playerHorizontalPositionPercentageInGameWorldContainer = playerPositionInWorldContainer.x / UIScreen.mainScreen().bounds.width
+            var requiredPercentDelta : CGFloat = 0.00
+            
+            if (playerIsFacingRight!) {
+                // Player is facing right, so adjust if the player is further than 25% of the way across the screen
+                if (playerHorizontalPositionPercentageInGameWorldContainer > playerVerticalBoundsLimit) {
+                    requiredPercentDelta = playerVerticalBoundsLimit - playerHorizontalPositionPercentageInGameWorldContainer
+                }
+                
+            } else {
+                if (playerHorizontalPositionPercentageInGameWorldContainer < (1.0 - playerVerticalBoundsLimit)) {
+                    requiredPercentDelta = (1.0 - playerVerticalBoundsLimit) - playerHorizontalPositionPercentageInGameWorldContainer
+                }
+            }
+            
+            setDebugMessage(String(Int(playerPositionInWorldContainer.x)) + " (" + String(Int(100 * playerHorizontalPositionPercentageInGameWorldContainer)) + "%)")
+            
+            
+            if (requiredPercentDelta != 0) {
+                
+                if (abs(requiredPercentDelta) < 0.05) {
+                    // Small change. Change position instantaneously,
+                    self.gameWorldContainer.position.x += requiredPercentDelta * UIScreen.mainScreen().bounds.width
+                } else {
+                    // Large change. Animate for smoothness, blocking further changes until the animation finishes.
+                    self.isPerformingHorizontalPlayerPositionCorrection = true
+                    let action = SKAction.moveByX(requiredPercentDelta * UIScreen.mainScreen().bounds.width, y: 0, duration: 0.25)
+                    self.gameWorldContainer.runAction(action, completion: {self.isPerformingHorizontalPlayerPositionCorrection = false })
+                }
+            }
+            
+            
         }
+        
+        
+        
+        return
+        
+        
+        let newX = playerPointInScene.x - UIScreen.mainScreen().bounds.width / 2
+        let newY = playerPointInScene.y - UIScreen.mainScreen().bounds.height / 2
+       
+        desiredCameraPosition = CGPointMake( newX,  newY)
+        
+        // Get closer to the target point. How quickly we move towards it depends on the distance from it. 
+        let percentChange = CGFloat(0.5)
+        
+        
+        
+        let distanceBetween = getDistanceSquared(desiredCameraPosition, p2: gameWorldContainer.position)
+        
+        // Special case: If we're very close, move the entire distance
+        if (distanceBetween < 10) {
+            gameWorldContainer.position = desiredCameraPosition
+        } else {
+            let xChange = abs(gameWorldContainer.position.x - desiredCameraPosition.x) * percentChange
+            let yChange = abs(gameWorldContainer.position.y - desiredCameraPosition.y) * percentChange
+            
+            if (gameWorldContainer.position.x >= desiredCameraPosition.x) {
+                gameWorldContainer.position.x = desiredCameraPosition.x + xChange
+            } else {
+                gameWorldContainer.position.x = desiredCameraPosition.x - xChange
+            }
+            
+            if (gameWorldContainer.position.y >= desiredCameraPosition.y) {
+                gameWorldContainer.position.y = desiredCameraPosition.y + yChange
+            } else {
+                gameWorldContainer.position.y = desiredCameraPosition.y - yChange
+            }
+        }
+        
+//        var action : SKAction? = nil
+//        var duration: NSTimeInterval = 0
+//        
+//        if ((self.playerIsFacingRight! && !self.playerWasFacingRight!)
+//            || (!self.playerIsFacingRight! && self.playerWasFacingRight!)) {
+//            duration = 0//0.25
+//            self.playerWasFacingRight = !self.playerWasFacingRight!
+//        }
+//
+//        if (xDiff > -150 && self.playerIsFacingRight!) {
+//            //gameWorldWrapper.position.x -= diff + 100
+//            
+//            action = SKAction.moveByX(-1 * (xDiff + 150), y: 0, duration: duration)
+//        } else if (xDiff < 350 && !self.playerIsFacingRight!) {
+//           // gameWorldWrapper.position.x -= diff - 100
+//            
+//            action = SKAction.moveByX(-1 * (xDiff - 350), y: 0, duration: duration)
+//        }
+//        if (action != nil) {
+//            gameWorldWrapper.runAction(action!)
+//        }
+    }
+    
+    func getDistanceSquared(p1: CGPoint, p2: CGPoint) -> CGFloat {
+        return pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2);
     }
     
     

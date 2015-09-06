@@ -16,8 +16,8 @@ public struct AppConstants
     }
     
     public struct UILayout {
-        static let PlayableAreaWidth = 1200.0
-        static let PlayableAreaHeight = 900.0
+        static let PlayableAreaWidth = 2200.0
+        static let PlayableAreaHeight = 1500.0
         
     }
 }
