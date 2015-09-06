@@ -34,9 +34,16 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
     
     let playerVerticalBoundsLimit: CGFloat = 0.35
     var isPerformingHorizontalPlayerPositionCorrection: Bool = false
-
     
     var debugLabel: SKLabelNode!
+    
+    var coin1: SKShapeNode!
+    var coin2: SKShapeNode!
+    var coin3: SKShapeNode!
+    
+    
+    
+    
     
     func tryDoInit(view: SKView) {
         if (!self.didInit) {
@@ -172,14 +179,61 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
             
             self.playerGroundContactCounter = 0
             
+            
+            
+            // Add "coins"
+            coin1 = SKShapeNode(circleOfRadius: 8)
+            coin1.fillColor = UIColor.purpleColor()
+            coin1.position = getTranslatedPositionWithinGameContainer(690,y: 360)
+            coin1.physicsBody = SKPhysicsBody(circleOfRadius: 8);
+            coin1.physicsBody!.dynamic = false
+            coin1.physicsBody!.categoryBitMask = coinCategory;
+            coin1.physicsBody!.contactTestBitMask = playerCategory;
+            coin1.physicsBody!.collisionBitMask = 0;
+            self.gameWorldContainer.addChild(coin1)
+            
+            coin2 = SKShapeNode(circleOfRadius: 8)
+            coin2.fillColor = UIColor.purpleColor()
+            coin2.position = getTranslatedPositionWithinGameContainer(860,y: 260)
+            coin2.physicsBody = SKPhysicsBody(circleOfRadius: 8);
+            coin2.physicsBody!.dynamic = false
+            coin2.physicsBody!.categoryBitMask = coinCategory;
+            coin2.physicsBody!.contactTestBitMask = playerCategory;
+            coin2.physicsBody!.collisionBitMask = 0;
+            self.gameWorldContainer.addChild(coin2)
+            
+            coin3 = SKShapeNode(circleOfRadius: 8)
+            coin3.fillColor = UIColor.purpleColor()
+            coin3.position = getTranslatedPositionWithinGameContainer(1860,y: 560)
+            coin3.physicsBody = SKPhysicsBody(circleOfRadius: 8);
+            coin3.physicsBody!.dynamic = false
+            coin3.physicsBody!.categoryBitMask = coinCategory;
+            coin3.physicsBody!.contactTestBitMask = playerCategory;
+            coin3.physicsBody!.collisionBitMask = 0;
+            self.gameWorldContainer.addChild(coin3)
+            
+            
+            let goalNode = SKSpriteNode(color: UIColor.greenColor(), size: CGSizeMake(40,80))
+            goalNode.anchorPoint = CGPointMake(0.0 , 0.0)
+            goalNode.position = getTranslatedPositionWithinGameContainer(2000, y: 140)
+            goalNode.physicsBody = SpriteFactory.CreateDefaultPhysicsBody(goalNode)
+            goalNode.physicsBody!.dynamic = false
+            goalNode.physicsBody!.categoryBitMask = goalCategory;
+            goalNode.physicsBody!.contactTestBitMask = playerCategory;
+            goalNode.physicsBody!.collisionBitMask = 0;
+
+            self.gameWorldContainer.addChild(goalNode)
+            
             // Initialization is complete
             self.didInit = true;
+        
             
-            let junk = SKSpriteNode(color: UIColor.blueColor(), size: CGSizeMake(1, 1))
-            junk.position = CGPointMake(0,0)
-            self.addChild(junk)
             
-            ensureGameWorldContainerIsInScene()
+            
+            
+            
+            
+            //ensureGameWorldContainerIsInScene()
         }
     }
     
@@ -231,25 +285,17 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        for touch in touches {
-            let location = touch.locationInNode(self)
-            let deltaX = location.x - self.lastDragPosition!.x
-            let deltaY = location.y - self.lastDragPosition!.y
-            self.gameWorldContainer.position.x += deltaX
-            self.gameWorldContainer.position.y += deltaY
-            self.lastDragPosition = location
-            
-            ensureGameWorldContainerIsInScene()
-            
-            //
-//            // Ensure the container never goes out of the scene bounds. 
-//            if (containerPositionInScene.x > 0) {
-//                
-//                self.gameWorldContainer.position.x = convertPoint(CGPointMake(0,0), toNode: self.gameWorldContainer).x
-//            }
-            
-            setDebugMessage(String(self.gameWorldContainer.position))
-        }
+//        for touch in touches {
+//            let location = touch.locationInNode(self)
+//            let deltaX = location.x - self.lastDragPosition!.x
+//            let deltaY = location.y - self.lastDragPosition!.y
+//            self.gameWorldContainer.position.x += deltaX
+//            self.gameWorldContainer.position.y += deltaY
+//            self.lastDragPosition = location
+//            
+//            ensureGameWorldContainerIsInScene()
+//            setDebugMessage(String(self.gameWorldContainer.position))
+//        }
     }
     
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -260,16 +306,17 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
        
-        
         applyPlayerMovement()
         tryRepositionGameWorld()
          //self.gameWorldContainer.position.x++
     }
     
+  
+    
     func applyPlayerMovement() {
         
         if (self.playerGroundContactCounter! > 0) {
-            setDebugMessage("Touching")
+            //setDebugMessage("Touching")
             let maxSpeed = CGFloat(300)
             let currentSpeed = abs(self.playerPhysics.velocity.dx)
             var newSpeed = maxSpeed - currentSpeed
@@ -283,28 +330,15 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
             
             self.playerPhysics.applyForce(CGVector(dx: newSpeed,dy: 0))
         } else {
-            setDebugMessage("Not Touching")
+            //setDebugMessage("Not Touching")
         }
 
-    
-        //        if (self.playerIsMoving! ) {
-//        let coeff = CGFloat(self.playerIsFacingRight! ? 1.0 : -1.0)
-//        let rate = CGFloat(0.95);
-//        
-//        let relativeVelocity = CGVectorMake(300-abs(self.playerPhysics.velocity.dx), 0);
-//        self.playerPhysics.velocity=CGVectorMake(self.playerPhysics.velocity.dx+relativeVelocity.dx * rate * coeff, self.playerPhysics.velocity.dy+relativeVelocity.dy * rate);
-        //        }
-        
     }
     
     func tryRepositionGameWorld() {
-        
-        
    
         let playerPositionInWorldContainer = convertPoint(self.playerRectangle.position, fromNode: self.gameWorldContainer)
-        let playerPointInScene = convertPoint(playerPositionInWorldContainer, fromNode: self)
-        
-        
+       
 
         // Handle player vertical position. It doesn't matter where the player is facing. If they go beyond the upper/lower
         // 25% of the screen, we scroll the up/down accordingly to keep the player inside the middle 50% of the vertical screen
@@ -358,71 +392,15 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
                     // Large change. Animate for smoothness, blocking further changes until the animation finishes.
                     self.isPerformingHorizontalPlayerPositionCorrection = true
                     let action = SKAction.moveByX(requiredPercentDelta * UIScreen.mainScreen().bounds.width, y: 0, duration: 0.25)
-                    self.gameWorldContainer.runAction(action, completion: {self.isPerformingHorizontalPlayerPositionCorrection = false })
+                    self.gameWorldContainer.runAction(action, completion: {
+                        self.isPerformingHorizontalPlayerPositionCorrection = false
+                    })
                 }
             }
             
             
         }
         
-        
-        
-        return
-        
-        
-        let newX = playerPointInScene.x - UIScreen.mainScreen().bounds.width / 2
-        let newY = playerPointInScene.y - UIScreen.mainScreen().bounds.height / 2
-       
-        desiredCameraPosition = CGPointMake( newX,  newY)
-        
-        // Get closer to the target point. How quickly we move towards it depends on the distance from it. 
-        let percentChange = CGFloat(0.5)
-        
-        
-        
-        let distanceBetween = getDistanceSquared(desiredCameraPosition, p2: gameWorldContainer.position)
-        
-        // Special case: If we're very close, move the entire distance
-        if (distanceBetween < 10) {
-            gameWorldContainer.position = desiredCameraPosition
-        } else {
-            let xChange = abs(gameWorldContainer.position.x - desiredCameraPosition.x) * percentChange
-            let yChange = abs(gameWorldContainer.position.y - desiredCameraPosition.y) * percentChange
-            
-            if (gameWorldContainer.position.x >= desiredCameraPosition.x) {
-                gameWorldContainer.position.x = desiredCameraPosition.x + xChange
-            } else {
-                gameWorldContainer.position.x = desiredCameraPosition.x - xChange
-            }
-            
-            if (gameWorldContainer.position.y >= desiredCameraPosition.y) {
-                gameWorldContainer.position.y = desiredCameraPosition.y + yChange
-            } else {
-                gameWorldContainer.position.y = desiredCameraPosition.y - yChange
-            }
-        }
-        
-//        var action : SKAction? = nil
-//        var duration: NSTimeInterval = 0
-//        
-//        if ((self.playerIsFacingRight! && !self.playerWasFacingRight!)
-//            || (!self.playerIsFacingRight! && self.playerWasFacingRight!)) {
-//            duration = 0//0.25
-//            self.playerWasFacingRight = !self.playerWasFacingRight!
-//        }
-//
-//        if (xDiff > -150 && self.playerIsFacingRight!) {
-//            //gameWorldWrapper.position.x -= diff + 100
-//            
-//            action = SKAction.moveByX(-1 * (xDiff + 150), y: 0, duration: duration)
-//        } else if (xDiff < 350 && !self.playerIsFacingRight!) {
-//           // gameWorldWrapper.position.x -= diff - 100
-//            
-//            action = SKAction.moveByX(-1 * (xDiff - 350), y: 0, duration: duration)
-//        }
-//        if (action != nil) {
-//            gameWorldWrapper.runAction(action!)
-//        }
     }
     
     func getDistanceSquared(p1: CGPoint, p2: CGPoint) -> CGFloat {
@@ -432,6 +410,8 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
     
     let groundCategory:UInt32 = 0x1 << 0
     let playerCategory:UInt32 = 0x1 << 1
+    let coinCategory:UInt32 = 0x1 << 2
+    let goalCategory:UInt32 = 0x1 << 3
     
     
     func setDebugMessage(message: String) {
@@ -446,6 +426,20 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
         if (collision == (groundCategory | playerCategory)) {
             self.playerGroundContactCounter!++
         }
+        if (collision == (coinCategory | playerCategory)) {
+            collectCoin(contact)
+        }
+        if (collision == (goalCategory | playerCategory)) {
+            winGame()
+        }
+    }
+    
+    func winGame() {
+        var winNode = SKLabelNode(text: "WIN")
+        winNode.fontSize = 40
+        winNode.position = self.playerRectangle.position
+        self.gameWorldContainer.addChild(winNode)
+        
     }
     
     func didEndContact(contact : SKPhysicsContact )
@@ -456,6 +450,22 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
             self.playerGroundContactCounter!--
             
         }
+    }
+    
+    
+    func collectCoin(contact: SKPhysicsContact) {
+  
+        if (self.coin1 == contact.bodyA.node || self.coin1 == contact.bodyB.node) {
+             coin1.removeFromParent()
+        }
+        if (self.coin2 == contact.bodyA.node || self.coin2 == contact.bodyB.node) {
+             coin2.removeFromParent()
+        }
+        if (self.coin3 == contact.bodyA.node || self.coin3 == contact.bodyB.node) {
+             coin3.removeFromParent()
+        }
+        
+        
     }
     
 }
