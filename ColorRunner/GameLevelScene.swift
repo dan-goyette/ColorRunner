@@ -42,11 +42,9 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
     var coin3: SKShapeNode!
     
     
-    
-    
-    
     func tryDoInit(view: SKView) {
         if (!self.didInit) {
+            self.backgroundColor = UIColor.purpleColor()
             view.showsPhysics = true
             self.physicsWorld.contactDelegate = self
             self.desiredCameraPosition = CGPointMake(0,0)
@@ -229,8 +227,6 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
             
             
             createDeathBorder();
-
-            
             
             // Initialization is complete
             self.didInit = true;
@@ -330,11 +326,37 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
             self.lastDragPosition = location
         
             if(self.moveButton.containsPoint(location)) {
-                self.playerIsFacingRight = !self.playerIsFacingRight
-                self.playerRectangle.xScale *= -1
-                self.playerIsMoving = true
+                restartLevel()
+                
+                
+//                if (self.physicsWorld.speed == 0) {
+//                    self.physicsWorld.speed = 1.0
+//                } else {
+//                    self.physicsWorld.speed = 0.0
+//                }
+//
+//                
+//
+//                let mainStoryboard = UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
+//                let vc : PauseDialogViewController = mainStoryboard.instantiateViewControllerWithIdentifier("PauseDialogViewController") as! PauseDialogViewController
+//                self.view!.window!.rootViewController!.presentViewController(vc, animated: true, completion: nil)
+//                
+                
+                
+                
+                
+//                self.playerIsFacingRight = !self.playerIsFacingRight
+//                self.playerRectangle.xScale *= -1
+//                self.playerIsMoving = true
             }
         }
+    }
+    
+    func restartLevel() {
+        var gameScene = GameLevelScene(size: self.size)
+        var transition = SKTransition.doorsCloseHorizontalWithDuration(0.5)
+        gameScene.scaleMode = SKSceneScaleMode.AspectFill
+        self.scene!.view?.presentScene(gameScene, transition: transition)
     }
     
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -359,9 +381,10 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
        
-        applyPlayerMovement()
-        tryRepositionGameWorld()
-         //self.gameWorldContainer.position.x++
+        
+            applyPlayerMovement()
+            tryRepositionGameWorld()
+        
     }
     
   
@@ -505,6 +528,8 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
     
     
     func killPlayer() {
+        self.physicsWorld.speed = 0.0
+
         let deadNode = SKLabelNode(text: "DEAD")
         deadNode.fontSize = 40
         deadNode.fontColor = UIColor.whiteColor()
