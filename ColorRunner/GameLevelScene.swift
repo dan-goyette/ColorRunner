@@ -56,7 +56,6 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
             self.gameWorldContainer = SKSpriteNode()
             self.gameWorldContainer.size = CGSize(width: AppConstants.UILayout.PlayableAreaWidth, height: AppConstants.UILayout.PlayableAreaHeight)
             self.gameWorldContainer.color = UIColor.grayColor()
-//            self.gameWorldContainer.position = CGPoint( x: -1 * (AppConstants.UILayout.PlayableAreaWidth) / 2, y: -1 * (AppConstants.UILayout.PlayableAreaHeight) / 2)
             self.gameWorldContainer.position = CGPoint( x: 3000, y: 3000)
             self.addChild(self.gameWorldContainer)
             
@@ -69,13 +68,6 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
             
 
             
-            
-            let tlBox = SKSpriteNode()
-            tlBox.size = CGSize(width: 10, height: 10)
-            tlBox.color = UIColor.redColor()
-            tlBox.position = getTranslatedPositionWithinGameContainer(5,y: 5)
-            self.gameWorldContainer.addChild(tlBox)
-       
             
             let floor = SKSpriteNode()
             floor.size = CGSize(width: AppConstants.UILayout.PlayableAreaWidth, height: 4)
@@ -221,8 +213,24 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
             goalNode.physicsBody!.categoryBitMask = goalCategory;
             goalNode.physicsBody!.contactTestBitMask = playerCategory;
             goalNode.physicsBody!.collisionBitMask = 0;
-
             self.gameWorldContainer.addChild(goalNode)
+            
+            
+            
+            let deathNode1 = SKSpriteNode(color: UIColor.redColor(), size: CGSizeMake(30,30))
+            deathNode1.anchorPoint = CGPointMake(0.0 , 0.0)
+            deathNode1.position = getTranslatedPositionWithinGameContainer(600, y: 140)
+            deathNode1.physicsBody = SpriteFactory.CreateDefaultPhysicsBody(deathNode1)
+            deathNode1.physicsBody!.dynamic = false
+            deathNode1.physicsBody!.categoryBitMask = deathCategory;
+            deathNode1.physicsBody!.contactTestBitMask = playerCategory;
+            deathNode1.physicsBody!.collisionBitMask = 0;
+            self.gameWorldContainer.addChild(deathNode1)
+            
+            
+            createDeathBorder();
+
+            
             
             // Initialization is complete
             self.didInit = true;
@@ -235,6 +243,51 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
             
             //ensureGameWorldContainerIsInScene()
         }
+    }
+    
+    func createDeathBorder() {
+        let topEdge = SKSpriteNode(color: UIColor.redColor(), size: CGSizeMake(self.gameWorldContainer.size.width, 2))
+        topEdge.anchorPoint = CGPointMake(0.0 , 0.0)
+        topEdge.position = getTranslatedPositionWithinGameContainer(0, y: self.gameWorldContainer.size.height)
+        topEdge.physicsBody = SpriteFactory.CreateDefaultPhysicsBody(topEdge)
+        topEdge.physicsBody!.dynamic = false
+        topEdge.physicsBody!.categoryBitMask = deathCategory;
+        topEdge.physicsBody!.contactTestBitMask = playerCategory;
+        topEdge.physicsBody!.collisionBitMask = 0;
+        self.gameWorldContainer.addChild(topEdge)
+        
+        let bottomEdge = SKSpriteNode(color: UIColor.redColor(), size: CGSizeMake(self.gameWorldContainer.size.width, 2))
+        bottomEdge.anchorPoint = CGPointMake(0.0 , 0.0)
+        bottomEdge.position = getTranslatedPositionWithinGameContainer(0, y: 0)
+        bottomEdge.physicsBody = SpriteFactory.CreateDefaultPhysicsBody(bottomEdge)
+        bottomEdge.physicsBody!.dynamic = false
+        bottomEdge.physicsBody!.categoryBitMask = deathCategory;
+        bottomEdge.physicsBody!.contactTestBitMask = playerCategory;
+        bottomEdge.physicsBody!.collisionBitMask = 0;
+        self.gameWorldContainer.addChild(bottomEdge)
+        
+        
+        let leftEdge = SKSpriteNode(color: UIColor.redColor(), size: CGSizeMake(2, self.gameWorldContainer.size.height))
+        leftEdge.anchorPoint = CGPointMake(0.0 , 0.0)
+        leftEdge.position = getTranslatedPositionWithinGameContainer(0, y: 0)
+        leftEdge.physicsBody = SpriteFactory.CreateDefaultPhysicsBody(leftEdge)
+        leftEdge.physicsBody!.dynamic = false
+        leftEdge.physicsBody!.categoryBitMask = deathCategory;
+        leftEdge.physicsBody!.contactTestBitMask = playerCategory;
+        leftEdge.physicsBody!.collisionBitMask = 0;
+        self.gameWorldContainer.addChild(leftEdge)
+        
+        let rightEdge = SKSpriteNode(color: UIColor.redColor(), size: CGSizeMake(2, self.gameWorldContainer.size.height))
+        rightEdge.anchorPoint = CGPointMake(0.0 , 0.0)
+        rightEdge.position = getTranslatedPositionWithinGameContainer(self.gameWorldContainer.size.width, y: 0)
+        rightEdge.physicsBody = SpriteFactory.CreateDefaultPhysicsBody(rightEdge)
+        rightEdge.physicsBody!.dynamic = false
+        rightEdge.physicsBody!.categoryBitMask = deathCategory;
+        rightEdge.physicsBody!.contactTestBitMask = playerCategory;
+        rightEdge.physicsBody!.collisionBitMask = 0;
+        self.gameWorldContainer.addChild(rightEdge)
+
+        
     }
     
     func getTranslatedPositionWithinGameContainer( desiredCoordinates: CGPoint) -> CGPoint {
@@ -401,6 +454,8 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
             
         }
         
+        //ensureGameWorldContainerIsInScene()
+
     }
     
     func getDistanceSquared(p1: CGPoint, p2: CGPoint) -> CGFloat {
@@ -412,6 +467,7 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
     let playerCategory:UInt32 = 0x1 << 1
     let coinCategory:UInt32 = 0x1 << 2
     let goalCategory:UInt32 = 0x1 << 3
+    let deathCategory:UInt32 = 0x1 << 4
     
     
     func setDebugMessage(message: String) {
@@ -432,15 +488,31 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
         if (collision == (goalCategory | playerCategory)) {
             winGame()
         }
+        if (collision == (deathCategory | playerCategory)) {
+            killPlayer()
+        }
+
     }
     
     func winGame() {
-        var winNode = SKLabelNode(text: "WIN")
+        let winNode = SKLabelNode(text: "WIN")
         winNode.fontSize = 40
+        winNode.fontColor = UIColor.redColor()
         winNode.position = self.playerRectangle.position
         self.gameWorldContainer.addChild(winNode)
         
     }
+    
+    
+    func killPlayer() {
+        let deadNode = SKLabelNode(text: "DEAD")
+        deadNode.fontSize = 40
+        deadNode.fontColor = UIColor.whiteColor()
+        deadNode.position = self.playerRectangle.position
+        self.gameWorldContainer.addChild(deadNode)
+        
+    }
+
     
     func didEndContact(contact : SKPhysicsContact )
     {
