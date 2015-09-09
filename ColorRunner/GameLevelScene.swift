@@ -225,6 +225,17 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
             deathNode1.physicsBody!.collisionBitMask = 0;
             self.gameWorldContainer.addChild(deathNode1)
             
+            let jumpNode = SKSpriteNode(color: UIColor.orangeColor(), size: CGSizeMake(30,4))
+            jumpNode.anchorPoint = CGPointMake(0.0 , 0.0)
+            jumpNode.position = getTranslatedPositionWithinGameContainer(890, y: 140)
+            jumpNode.physicsBody = SpriteFactory.CreateDefaultPhysicsBody(jumpNode)
+            jumpNode.physicsBody!.dynamic = false
+            jumpNode.physicsBody!.categoryBitMask = jumpCategory;
+            jumpNode.physicsBody!.contactTestBitMask = playerCategory;
+            jumpNode.physicsBody!.collisionBitMask = 0;
+            self.gameWorldContainer.addChild(jumpNode)
+
+            
             
             createDeathBorder();
             
@@ -380,10 +391,21 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
     
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
-       
+    
+//        
+//        if (self.playerPhysics.velocity.dx < 0 && self.playerIsFacingRight!) {
+//            self.playerIsFacingRight = false
+//            self.playerRectangle.xScale *= -1
+//        } else if (self.playerPhysics.velocity.dx > 0 && !self.playerIsFacingRight!) {
+//            self.playerIsFacingRight = true
+//            self.playerRectangle.xScale *= -1
+//        }
+
         
-            applyPlayerMovement()
-            tryRepositionGameWorld()
+        applyPlayerMovement()
+        tryRepositionGameWorld()
+        
+        setDebugMessage(String(self.playerPhysics.velocity.dx) + ", " + String(self.playerPhysics.velocity.dy))
         
     }
     
@@ -491,6 +513,7 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
     let coinCategory:UInt32 = 0x1 << 2
     let goalCategory:UInt32 = 0x1 << 3
     let deathCategory:UInt32 = 0x1 << 4
+    let jumpCategory:UInt32 = 0x1 << 5
     
     
     func setDebugMessage(message: String) {
@@ -514,10 +537,17 @@ class GameLevelScene: SKScene, SKPhysicsContactDelegate {
         if (collision == (deathCategory | playerCategory)) {
             killPlayer()
         }
+        if (collision == (jumpCategory | playerCategory)) {
+            self.playerPhysics.applyImpulse(CGVectorMake(0, CGFloat(20)))
+
+        }
 
     }
     
     func winGame() {
+        self.physicsWorld.speed = 0.0
+
+        
         let winNode = SKLabelNode(text: "WIN")
         winNode.fontSize = 40
         winNode.fontColor = UIColor.redColor()
